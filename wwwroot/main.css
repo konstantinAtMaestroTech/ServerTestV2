@@ -53,3 +53,10 @@ body, html {
     flex: 0 1 auto;
     min-width: 2em;
 }
+
+#ID {
+    height: 2em;
+    margin: 0 0.5em;
+    font-size: 1em;
+    font-family: ArtifaktElement;
+}

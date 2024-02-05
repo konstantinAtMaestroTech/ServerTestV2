@@ -1,10 +1,15 @@
 import { initViewer, loadModel } from './viewer.js';
 
-initViewer(document.getElementById('preview')).then(viewer => {
+let viewer;
+
+initViewer(document.getElementById('preview')).then(v => {
+    viewer = v;
     const urn = window.location.hash?.substring(1);
     setupModelSelection(viewer, urn);
     setupModelUpload(viewer);
 });
+
+export { viewer };
 
 async function setupModelSelection(viewer, selectedUrn) {
     const dropdown = document.getElementById('models');
@@ -59,6 +64,49 @@ async function setupModelUpload(viewer) {
             input.value = '';
         }
     };
+}
+
+
+export async function selectScannedElement(viewer, decodedText) {
+    try {
+        let idDict = await new Promise(resolve => {
+            viewer.model.getExternalIdMapping(data => resolve(data));
+        });
+        let dynamicKey = decodedText;
+        let objectID = idDict[dynamicKey];
+        viewer.isolate(objectID);
+        viewer.fitToView(objectID);
+
+        // Select the scanned element
+        let selectionName = Array();
+        let selectionValue = Array();
+        let selectionCategory = Array();
+
+        // Select the scanned element
+        viewer.select(objectID);
+        viewer.getProperties(objectID, function (props) {
+        // Show the native Autodesk property panel
+
+            const propertyPanel = new Autodesk.Viewing.UI.PropertyPanel(viewer.container, 'PropertyPanel', 'Properties'); // This will show the property panel
+            for (var i = 0; i < props.properties.length; i++) {
+                propertyPanel.addProperty(props.properties[i].displayName, props.properties[i].displayValue, props.properties[i].displayCategory);
+            }
+            propertyPanel.setVisible(true);
+
+            let referenceElement = document.getElementById('startButton');
+
+            let button = document.createElement('button');
+            button.textContent = 'Open Associated File';
+            button.onclick = function(e) {
+            // Open the file associated with the QR code in a new tab
+                window.open(`/path/to/file/associated/with/${decodedText}`, '_blank');
+            };
+            referenceElement.parentNode.insertBefore(button, referenceElement);
+        });
+    } catch (err) {
+        alert('Could not select element. See the console for more details.');
+        console.error(err);
+    }
 }
 
 async function onModelSelected(viewer, urn) {
