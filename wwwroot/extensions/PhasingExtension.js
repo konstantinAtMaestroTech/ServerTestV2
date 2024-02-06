@@ -1,8 +1,5 @@
 // Fix the dependencies in the csv file
 
-
-import { viewer } from "../main.js";
-
 // This config controls the state of the Gantt chart
 const phasing_config = {
   "tasks": [],
@@ -358,34 +355,24 @@ class PhasingPanel extends Autodesk.Viewing.UI.DockingPanel {
   }
 
   async inputCSV() {
-    const { value: file } = await Swal.fire({
-      title: 'Select csv file',
-      input: 'file',
-      inputAttributes: {
-        'accept': '.csv',
-        'aria-label': 'Upload your csv for configuration'
-      },
-      footer: '<a href="https://github.com/autodesk-platform-services/aps-extensions/blob/main/public/extensions/PhasingExtension/assets/sample.csv" target="_blank">GRAB A SAMPLE CSV HERE!</a>',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Import CSV'
-    })
-    if (file) {
-      const reader = new FileReader();
-      const idDict = await mappingUniqueIdtoDbid(this.extension.viewer);
-      console.log(idDict);
-      reader.onload = async (e) => {
-        let lines = e.target.result.split('\n');
-        if (this.validateCSV(lines[0])) {
-          let header = lines[0];
-          lines.shift();
-          let newTasks = lines.map(line => this.lineToObject(line, header, idDict));
-          phasing_config.tasks = newTasks;
-        }
-      }
-      reader.readAsBinaryString(file);
+    const response = await fetch('../../temp/gantt/csv_sheet.csv');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    const file = await response.blob();
+    const reader = new FileReader();
+    const idDict = await mappingUniqueIdtoDbid(this.extension.viewer);
+    console.log(idDict);
+    reader.onload = async (e) => {
+      let lines = e.target.result.split('\n');
+      if (this.validateCSV(lines[0])) {
+        let header = lines[0];
+        lines.shift();
+        let newTasks = lines.map(line => this.lineToObject(line, header, idDict));
+        phasing_config.tasks = newTasks;
+      }
+    }
+    reader.readAsBinaryString(file);
   }
 
   //This function converts a line from imported csv into an object to generate the GANTT chart
@@ -408,7 +395,6 @@ class PhasingPanel extends Autodesk.Viewing.UI.DockingPanel {
   }
 
   addPropToMask(filterValue, taskId) {
-    console.log(filterValue);
     phasing_config.mapTaksNProps[filterValue] = taskId;
   }
 
@@ -479,7 +465,7 @@ class PhasingExtension extends Autodesk.Viewing.Extension {
 
   onToolbarCreated() {
     this._panel = new PhasingPanel(this, 'dashboard-phases-panel', 'Schedule', { x: 10, y: 10 });
-    this._button = this.createToolbarButton('dashboard-phases-button', 'https://img.icons8.com/external-outline-black-m-oki-orlando/32/ffffff/external-gantt-charts-and-diagrams-outline-black-m-oki-orlando.png', 'Show Gantt Chart');//
+    this._button = this.createToolbarButton('dashboard-phases-button', "https://img.icons8.com/external-outline-black-m-oki-orlando/64/external-gantt-charts-and-diagrams-outline-black-m-oki-orlando.png", 'Show Gantt Chart');//
     this._button.onClick = () => {
       this._panel.setVisible(!this._panel.isVisible());
       this._button.setState(this._panel.isVisible() ? Autodesk.Viewing.UI.Button.State.ACTIVE : Autodesk.Viewing.UI.Button.State.INACTIVE);

@@ -1,4 +1,4 @@
-export class LoggerPanel extends Autodesk.Viewing.UI.DockingPanel {
+export class ExplorePanel extends Autodesk.Viewing.UI.DockingPanel {
     constructor(extension, id, title, options) {
         super(extension.viewer.container, id, title, options);
         this.extension = extension;

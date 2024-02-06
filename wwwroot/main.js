@@ -5,67 +5,29 @@ let viewer;
 initViewer(document.getElementById('preview')).then(v => {
     viewer = v;
     const urn = window.location.hash?.substring(1);
-    setupModelSelection(viewer, urn);
-    setupModelUpload(viewer);
+    myModelInititialization(viewer);
 });
 
 export { viewer };
 
-async function setupModelSelection(viewer, selectedUrn) {
-    const dropdown = document.getElementById('models');
-    dropdown.innerHTML = '';
+async function myModelInititialization(viewer) {
     try {
         const resp = await fetch('/api/models');
         if (!resp.ok) {
             throw new Error(await resp.text());
         }
         const models = await resp.json();
-        dropdown.innerHTML = models.map(model => `<option value=${model.urn} ${model.urn === selectedUrn ? 'selected' : ''}>${model.name}</option>`).join('\n');
-        dropdown.onchange = () => onModelSelected(viewer, dropdown.value);
-        if (dropdown.value) {
-            onModelSelected(viewer, dropdown.value);
+        const modelUrn = String(models.map(model => model.urn));
+        console.log('Model URN is ' + modelUrn);
+        console.log('Model URN type is ' + typeof modelUrn);
+        if (modelUrn) {
+            onModelSelected(viewer, modelUrn);
         }
     } catch (err) {
         alert('Could not list models. See the console for more details.');
         console.error(err);
     }
 }
-
-async function setupModelUpload(viewer) {
-    const upload = document.getElementById('upload');
-    const input = document.getElementById('input');
-    const models = document.getElementById('models');
-    upload.onclick = () => input.click();
-    input.onchange = async () => {
-        const file = input.files[0];
-        let data = new FormData();
-        data.append('model-file', file);
-        if (file.name.endsWith('.zip')) { // When uploading a zip file, ask for the main design file in the archive
-            const entrypoint = window.prompt('Please enter the filename of the main design inside the archive.');
-            data.append('model-zip-entrypoint', entrypoint);
-        }
-        upload.setAttribute('disabled', 'true');
-        models.setAttribute('disabled', 'true');
-        showNotification(`Uploading model <em>${file.name}</em>. Do not reload the page.`);
-        try {
-            const resp = await fetch('/api/models', { method: 'POST', body: data });
-            if (!resp.ok) {
-                throw new Error(await resp.text());
-            }
-            const model = await resp.json();
-            setupModelSelection(viewer, model.urn);
-        } catch (err) {
-            alert(`Could not upload model ${file.name}. See the console for more details.`);
-            console.error(err);
-        } finally {
-            clearNotification();
-            upload.removeAttribute('disabled');
-            models.removeAttribute('disabled');
-            input.value = '';
-        }
-    };
-}
-
 
 export async function selectScannedElement(viewer, decodedText) {
     try {
@@ -110,6 +72,7 @@ export async function selectScannedElement(viewer, decodedText) {
 }
 
 async function onModelSelected(viewer, urn) {
+    
     if (window.onModelSelectedTimeout) {
         clearTimeout(window.onModelSelectedTimeout);
         delete window.onModelSelectedTimeout;
@@ -135,6 +98,36 @@ async function onModelSelected(viewer, urn) {
             default:
                 clearNotification();
                 loadModel(viewer, urn);
+                viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, (x) =>  {
+                
+                    let explodeExtension = viewer.getExtension('Autodesk.Explode');
+                    let orbitExtension = viewer.getExtension('Autodesk.Viewing.FusionOrbit');
+                    let navTools = viewer.getExtension('Autodesk.DefaultTools.NavTools');
+                    let bimWalk = viewer.getExtension('Autodesk.BimWalk');
+                    /* let sectionExtension = viewer.getExtension('Autodesk.Section'); */
+                    let propertiesPanel = viewer.getExtension('Autodesk.PropertiesManager');
+                    let modelStructure = viewer.getExtension('Autodesk.ModelStructure');
+                    let viewCube = viewer.getExtension('Autodesk.ViewCubeUi');
+                    let documentBrowser = viewer.getExtension('Autodesk.DocumentBrowser');
+    
+                    
+                    orbitExtension.unload();
+                    explodeExtension.unload();
+                    navTools.unload();
+                    bimWalk.unload();
+                    /* sectionExtension.unload(); */
+                    propertiesPanel.unload();
+                    modelStructure.unload();
+                    viewCube.unload();
+                    documentBrowser.unload();
+    
+                    let settingsTools = viewer.toolbar.getControl('settingsTools');
+                    let modelTools = viewer.toolbar.getControl('modelTools');
+                    
+                    settingsTools.removeControl('toolbar-settingsTool');
+                    settingsTools.removeControl('toolbar-fullscreenTool');
+                    modelTools.removeControl('toolbar-sectionTool');
+                });
                 break; 
         }
     } catch (err) {

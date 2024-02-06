@@ -1,5 +1,5 @@
 import { BaseExtension } from './BaseExtension.js';
-import { LoggerPanel } from './LoggerPanel.js';
+import { ExplorePanel } from './ExplorePanel.js';
 
 function reverseObject(originalObject) {
     return Object.keys(originalObject).reduce((reversedObject, key) => {
@@ -8,7 +8,7 @@ function reverseObject(originalObject) {
     }, {});
 }
 
-class LoggerExtension extends BaseExtension {
+class ExploreExtension extends BaseExtension {
 
     constructor(viewer, options) {
         super(viewer, options);
@@ -38,8 +38,8 @@ class LoggerExtension extends BaseExtension {
     }
 
     onToolbarCreated() {
-        this._panel = new LoggerPanel(this, 'model-exploration-panel', 'Explore Mode', { x: 10, y: 10 });
-        this._button = this.createToolbarButton('exploration-button', 'https://img.icons8.com/small/32/brief.png', 'Turn on/off Explore Mode');
+        this._panel = new ExplorePanel(this, 'model-exploration-panel', 'Explore Mode', { x: 10, y: 10 });
+        this._button = this.createToolbarButton('exploration-button', "https://img.icons8.com/ios/50/search--v1.png", 'Turn on/off Explore Mode');
         this._button.onClick = () => {
             this._panel.setVisible(!this._panel.isVisible());
             this._button.setState(this._panel.isVisible() ? Autodesk.Viewing.UI.Button.State.ACTIVE : Autodesk.Viewing.UI.Button.State.INACTIVE);
@@ -95,4 +95,4 @@ class LoggerExtension extends BaseExtension {
     }
 }
 
-Autodesk.Viewing.theExtensionManager.registerExtension('LoggerExtension', LoggerExtension);
+Autodesk.Viewing.theExtensionManager.registerExtension('ExploreExtension', ExploreExtension);

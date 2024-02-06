@@ -54,9 +54,18 @@ body, html {
     min-width: 2em;
 }
 
-#ID {
-    height: 2em;
-    margin: 0 0.5em;
-    font-size: 1em;
-    font-family: ArtifaktElement;
+#button {
+    font-size: 16px;
+}
+
+@media (max-width: 600px) {
+    #button {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    #button {
+        font-size: 6px;
+    }
 }
