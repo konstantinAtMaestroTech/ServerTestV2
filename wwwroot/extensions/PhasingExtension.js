@@ -36,8 +36,8 @@ class PhasingPanel extends Autodesk.Viewing.UI.DockingPanel {
     this.extension = extension;
     this.container.style.left = (options.x || 0) + 'px';
     this.container.style.top = (options.y || 0) + 'px';
-    this.container.style.width = (options.width || 500) + 'px';
-    this.container.style.height = (options.height || 400) + 'px';
+    this.container.style.width = (options.width || 400) + 'px';
+    this.container.style.height = (options.height || 300) + 'px';
     this.container.style.resize = 'both';
     this.container.style.overflow = 'overlay';
     this.container.style.backgroundColor = 'white';
@@ -54,6 +54,9 @@ class PhasingPanel extends Autodesk.Viewing.UI.DockingPanel {
 
     this.div = document.createElement('div');
     this.container.appendChild(this.div);
+
+    this.closeButton = this.createCloseButton();
+    this.container.appendChild(this.closeButton);
 
     //Here we add the button to update the csv
     this.importbutton = document.createElement('button');
