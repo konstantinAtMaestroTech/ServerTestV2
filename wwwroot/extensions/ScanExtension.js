@@ -38,7 +38,7 @@ async function selectScannedElement(viewer, decodedText) {
             button.onclick = function(e) {
             // Open the file associated with the QR code in a new tab
                 let popup = window.open("", "_blank");
-                let imageUrl = `/labelsServer/${decodedText}.png`
+                let imageUrl = `/temp/Saviola/Labels/${decodedText}.png`
                 popup.document.write(`<img src="${imageUrl}" alt="Image for imageUrl ${imageUrl}">`);
             };
             header.appendChild(button);

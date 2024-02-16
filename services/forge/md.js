@@ -1,4 +1,5 @@
 const { DerivativesApi } = require('forge-apis');
+console.log('forge-apis:', DerivativesApi);
 const { getInternalToken } = require('./auth.js');
 
 async function translateObject(urn, rootFilename) {

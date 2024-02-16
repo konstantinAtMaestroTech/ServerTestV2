@@ -16,7 +16,7 @@ class ExploreExtension extends BaseExtension {
         this._extensionIsActive = false;
         this._panel = null;
     }
-
+    
     load() {
         super.load();
         return true;
@@ -77,15 +77,19 @@ class ExploreExtension extends BaseExtension {
         if (this._panel.isVisible() === true) {
 
             super.onSelectionChanged(model, dbids);
-            console.log('Selection has changed', dbids);
+            this._panel.handleElementsColorsGroups();
+            this._panel.handleElementsColorsZones();
+            this._panel.uploadLabels();
+            this._panel.uploadDrawings();
+            this._panel.uploadInstructions();
     
             // Open a new window for each selected dbid
     
-            for (let dbid of dbids) {
+            /* for (let dbid of dbids) {
                 let imageUrl = await this.getImageUrlForDbId(dbid);
                 let popup = window.open("", "_blank");
                 popup.document.write(`<img src="${imageUrl}" alt="Image for dbid ${dbid}">`);
-            }
+            } */
         }
     }
 

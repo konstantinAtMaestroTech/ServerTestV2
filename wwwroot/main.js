@@ -17,6 +17,7 @@ async function myModelInititialization(viewer) {
             throw new Error(await resp.text());
         }
         const models = await resp.json();
+        console.log('Models are ' + models);
         const modelUrn = String(models.map(model => model.urn));
         console.log('Model URN is ' + modelUrn);
         console.log('Model URN type is ' + typeof modelUrn);
@@ -98,13 +99,13 @@ async function onModelSelected(viewer, urn) {
             default:
                 clearNotification();
                 loadModel(viewer, urn);
-                viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, (x) =>  {
+                /* viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, (x) =>  {
                 
                     let explodeExtension = viewer.getExtension('Autodesk.Explode');
                     let orbitExtension = viewer.getExtension('Autodesk.Viewing.FusionOrbit');
                     let navTools = viewer.getExtension('Autodesk.DefaultTools.NavTools');
                     let bimWalk = viewer.getExtension('Autodesk.BimWalk');
-                    /* let sectionExtension = viewer.getExtension('Autodesk.Section'); */
+                    let sectionExtension = viewer.getExtension('Autodesk.Section');
                     let propertiesPanel = viewer.getExtension('Autodesk.PropertiesManager');
                     let modelStructure = viewer.getExtension('Autodesk.ModelStructure');
                     let viewCube = viewer.getExtension('Autodesk.ViewCubeUi');
@@ -115,7 +116,7 @@ async function onModelSelected(viewer, urn) {
                     explodeExtension.unload();
                     navTools.unload();
                     bimWalk.unload();
-                    /* sectionExtension.unload(); */
+                    sectionExtension.unload();
                     propertiesPanel.unload();
                     modelStructure.unload();
                     viewCube.unload();
@@ -127,7 +128,7 @@ async function onModelSelected(viewer, urn) {
                     settingsTools.removeControl('toolbar-settingsTool');
                     settingsTools.removeControl('toolbar-fullscreenTool');
                     modelTools.removeControl('toolbar-sectionTool');
-                });
+                }); */
                 break; 
         }
     } catch (err) {

@@ -11,6 +11,21 @@ app.get('/labelsServer/:imageID', (req, res) => {
     res.sendFile(__dirname + '/temp/labelsServer/' + String(imageID));
     }
 );
+app.get('/docs/Saviola/LabelsApp/:imageID', (req, res) => {
+    const {imageID} = req.params;
+    res.sendFile(__dirname + '/temp/Saviola/LabelsAppVersion/' + String(imageID));
+    }
+);
+app.get('/docs/Saviola/Drawings/:imageID', (req, res) => {
+    const {imageID} = req.params;
+    res.sendFile(__dirname + '/temp/Saviola/Drawings/' + String(imageID));
+    }
+);
+app.get('/docs/Saviola/Instructions/:imageID', (req, res) => {
+    const {imageID} = req.params;
+    res.sendFile(__dirname + '/temp/Saviola/Instructions/' + String(imageID));
+    }
+);
 app.get('/temp/gantt/csv_sheet.csv', (req, res) => {
     res.sendFile(__dirname + '/temp/gantt/csv_sheet.csv');
     }

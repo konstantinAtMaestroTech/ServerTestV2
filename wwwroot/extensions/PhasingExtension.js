@@ -1,4 +1,29 @@
-// Fix the dependencies in the csv file
+// Double tap 
+
+var doubletapDeltaTime_ = 700;
+var doubletap1Function_ = null;
+var doubletap2Function_ = null;
+var doubletapTimer = null;
+
+function tap(singleTapFunc, doubleTapFunc) {
+    if (doubletapTimer==null) {
+    // First tap, we wait X ms to the second tap
+        doubletapTimer_ = setTimeout(doubletapTimeout_, doubletapDeltaTime_);
+        doubletap1Function_ = singleTapFunc;
+        doubletap2Function_ = doubleTapFunc;
+    } else {
+    // Second tap
+        clearTimeout(doubletapTimer);
+        doubletapTimer_ = null;
+        doubletap2Function_();
+    }
+}
+
+function doubletapTimeout() {
+// Wait for second tap timeout
+    doubletap1Function_();
+    doubleTapTimer_ = null;
+}
 
 // This config controls the state of the Gantt chart
 const phasing_config = {
@@ -59,7 +84,10 @@ class PhasingPanel extends Autodesk.Viewing.UI.DockingPanel {
     this.container.appendChild(this.closeButton);
 
     //Here we add the button to update the csv
-    this.importbutton = document.createElement('button');
+
+    ///////////////
+
+/*     this.importbutton = document.createElement('button');
     this.importbutton.innerHTML = 'IMPORT CSV';
     this.importbutton.style.width = (this.options.buttonWidth || 100) + 'px';
     this.importbutton.style.height = (this.options.buttonHeight || 24) + 'px';
@@ -72,9 +100,14 @@ class PhasingPanel extends Autodesk.Viewing.UI.DockingPanel {
 
     this.importbutton.onclick = this.importCSV.bind(this);
     this.div.appendChild(this.importbutton);
+ */
+    //////////////
 
     //Here we add the button to export the Gantt as csv
-    this.exportbutton = document.createElement('button');
+
+    //////////////
+
+/*     this.exportbutton = document.createElement('button');
     this.exportbutton.innerHTML = 'Export CSV';
     this.exportbutton.style.width = (this.options.buttonWidth || 100) + 'px';
     this.exportbutton.style.height = (this.options.buttonHeight || 24) + 'px';
@@ -86,9 +119,12 @@ class PhasingPanel extends Autodesk.Viewing.UI.DockingPanel {
     this.exportbutton.style.color = "black";
 
     this.exportbutton.onclick = this.exportCSV.bind(this);
-    this.div.appendChild(this.exportbutton);
+    this.div.appendChild(this.exportbutton) */
+
+    //////////////
 
     //Here we create a dropdown to control vision of the GANTT
+
     this.dropdown = document.createElement('select');
     this.dropdown.style.width = (this.options.dropdownWidth || 100) + 'px';
     this.dropdown.style.height = (this.options.dropdownHeight || 28) + 'px';
@@ -108,6 +144,7 @@ class PhasingPanel extends Autodesk.Viewing.UI.DockingPanel {
     this.div.appendChild(this.dropdown);
 
     //Here we create a switch to control vision of the schedule based on the GANTT chart
+
     this.checkbox = document.createElement('input');
     this.checkbox.type = 'checkbox';
     this.checkbox.id = 'colormodel';
@@ -136,7 +173,9 @@ class PhasingPanel extends Autodesk.Viewing.UI.DockingPanel {
     this.content.innerHTML = `<svg id="phasing-container"></svg>`;
     this.container.appendChild(this.content);
 
-    this.dockleft = document.createElement('img');
+    /////////////
+
+/*     this.dockleft = document.createElement('img');
     //https://icons8.com/icon/105589/left-docking
     this.dockleft.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QA/wD/AP+gvaeTAAABGklEQVRoge2ZMQ6CQBBFn8bGxgNI7Rltbb2JFvbeiZgIjSUWsIYQdiMws8sm85IpDOuf/7MTNgAYhmGsmRPwAGqgWVg1cAeKmOZfAsaHVcYK8VAw7+oWI4DE2PjqLWVyE7jWTFj7D9J6AGwlRFJiAVKzm7B2OMOrIPsdyCXAZc6ftM4AV1PMzxrfuQ0l9Zz5LAP0zWcXYGg+qwBj5rMJ4DOfRYCQeW//NZ0DH2nBFCN0HlmXzQg5fCHUGmrojYVQbaihNwyh3lBDrx8iSkMNPRdilCkPNKm4AnvfRXsrkRoLkBoLkJrQbbQGDr3fEmeBo5ISCu3AU6pJZO0fBe3HiNBDxpwqgWOMAHSNbrRbvtR41WlFM28YhqHPF0NRPAWhEg4IAAAAAElFTkSuQmCC';
     this.dockleft.style.width = (this.options.imageWidth || 30) + 'px';
@@ -154,12 +193,14 @@ class PhasingPanel extends Autodesk.Viewing.UI.DockingPanel {
     this.dockbottom.style.margin = '0 0 0 ' + (this.options.margin || 10) + 'px';
     this.dockbottom.style.verticalAlign = (this.options.verticalAlign || 'middle');
     this.dockbottom.onclick = this.toggleOrientation.bind(this, true);
-    this.div.appendChild(this.dockbottom);
+    this.div.appendChild(this.dockbottom); */
+
+    /////////////
 
     this.updateTasks();
   }
 
-  toggleOrientation(isVertical) {
+/*   toggleOrientation(isVertical) {
     const { left: startX, top: startY, right: endX, bottom: endY } = this.extension.viewer.impl.getCanvasBoundingClientRect();
 
     let defaultPanelHeigth = (this.options.height || 400);
@@ -177,7 +218,7 @@ class PhasingPanel extends Autodesk.Viewing.UI.DockingPanel {
       this.container.style.left = (this.options.x || 0) + 'px';
       this.container.style.top = (this.options.y || 0) + 'px';
     }
-  }
+  } */
 
   update(model, dbids) {
     if (phasing_config.tasks.length === 0) {
@@ -199,7 +240,7 @@ class PhasingPanel extends Autodesk.Viewing.UI.DockingPanel {
     }
   }
 
-  async exportCSV() {
+/*   async exportCSV() {
     let tasks = this.gantt.tasks.map(task => `${task.id},${task.name},${task._start.toISOString().split('T')[0]},${task._end.toISOString().split('T')[0]},${task.progress},${Object.keys(phasing_config.mapTaksNProps).find(key => phasing_config.mapTaksNProps[key] === task.id)},${task.dependencies.join('-')}`);
 
     let header = Object.values(phasing_config.requiredProps);
@@ -213,13 +254,17 @@ class PhasingPanel extends Autodesk.Viewing.UI.DockingPanel {
     a.download = this.currentDataType + (new Date()).getTime() + '.csv';
     document.body.appendChild(a);
     a.click();
-  }
+  } */
 
-  async importCSV() {
+  ///////////////
+
+/*   async importCSV() {
     await this.inputCSV();
     this.gantt = this.createGanttChart();
     this.handleColors.call(this);
-  }
+  } */
+
+  ///////////////
 
   createGanttChart() {
     document.getElementById('phasing-container').innerHTML = `<svg id="phasing-container"></svg>`;

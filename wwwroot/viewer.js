@@ -25,7 +25,7 @@ export function initViewer(container) {
                 extensions: [
                     'Autodesk.DocumentBrowser',
                     'PhasingExtension',
-                    'ExploreExtension',
+                    //'ExploreExtension',
                     'ScanExtension'
                 ]
             };
